@@ -6,7 +6,7 @@ function Register() {
     <>
       <div className="bg-black h-screen w-full flex justify-center items-center">
         <div className="bg-white p-3 rounded-lg flex flex-col items-center">
-          <h2 className="head font-semibold text-2xl">Login</h2>
+          <h2 className="head font-semibold text-2xl">Sign up</h2>
           <form action="">
             <div className="flex flex-col">
               <label htmlFor="email" className="font-semibold">
