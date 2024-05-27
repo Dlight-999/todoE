@@ -10,19 +10,41 @@ const initialState: authState = {
   error: null,
 };
 
+// Thunk for signing up a user
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
-  async (formData: { email: string; password: string }) => {
-    const response = await axios.post(`${baseURL}api/user/signup`, formData);
-    return response.data;
+  async (
+    formData: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(`${baseURL}api/users/signup`, formData);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data.errors[0].msg);
+      }
+      return rejectWithValue(error.message);
+    }
   }
 );
 
+// Thunk for logging in a user
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (formData: { email: string; password: string }) => {
-    const response = await axios.post(`${baseURL}api/user/login`, formData);
-    return response.data;
+  async (
+    formData: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(`${baseURL}api/users/login`, formData);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data.errors[0].msg);
+      }
+      return rejectWithValue(error.message);
+    }
   }
 );
 
@@ -38,6 +60,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Signup User
       .addCase(signupUser.pending, (state) => {
         state.status = "loading";
       })
@@ -47,13 +70,19 @@ const authSlice = createSlice({
           state.status = "Succeeded";
           state.user = action.payload.user;
           state.token = action.payload.token;
+          state.error = null;
           localStorage.setItem("token", action.payload.token);
         }
       )
-      .addCase(signupUser.rejected, (state, action) => {
+      .addCase(signupUser.rejected, (state, action: PayloadAction<unknown>) => {
         state.status = "failed";
-        state.error = action.error.message || "Failed to sign up";
+        if (typeof action.payload === "string") {
+          state.error = action.payload;
+        } else {
+          state.error = "Failed to sign up";
+        }
       })
+      // Login User
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
       })
@@ -63,12 +92,17 @@ const authSlice = createSlice({
           state.status = "Succeeded";
           state.user = action.payload.user;
           state.token = action.payload.token;
+          state.error = null;
           localStorage.setItem("token", action.payload.token);
         }
       )
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action: PayloadAction<unknown>) => {
         state.status = "failed";
-        state.error = action.error.message || "failed to login";
+        if (typeof action.payload === "string") {
+          state.error = action.payload;
+        } else {
+          state.error = "Failed to login";
+        }
       });
   },
 });
