@@ -4,8 +4,8 @@ import axios from "axios";
 
 const baseURL = "http://localhost:5000/";
 const initialState: authState = {
-  user: null,
-  token: null,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  token: localStorage.getItem("token"),
   status: "idle",
   error: null,
 };
@@ -56,6 +56,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -72,6 +73,7 @@ const authSlice = createSlice({
           state.token = action.payload.token;
           state.error = null;
           localStorage.setItem("token", action.payload.token);
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
       .addCase(signupUser.rejected, (state, action: PayloadAction<unknown>) => {
@@ -94,6 +96,7 @@ const authSlice = createSlice({
           state.token = action.payload.token;
           state.error = null;
           localStorage.setItem("token", action.payload.token);
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
       .addCase(loginUser.rejected, (state, action: PayloadAction<unknown>) => {
