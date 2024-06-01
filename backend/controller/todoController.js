@@ -4,25 +4,9 @@ import Todo from "../models/todoModel.js";
 // Get all todos
 const getAllTodo = async (req, res) => {
   try {
-    const todos = await Todo.find({}).sort({ createdAt: 1 });
+    const user_id = req.params;
+    const todos = await Todo.find({ user_id }).sort({ createdAt: -1 });
     res.status(200).json(todos);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Get one todo by ID
-const getTodo = async (req, res) => {
-  const { id } = req.params;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "Invalid ID" });
-    }
-    const todo = await Todo.findById(id);
-    if (!todo) {
-      return res.status(404).json({ error: "Todo not found" });
-    }
-    res.status(200).json(todo);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -30,9 +14,9 @@ const getTodo = async (req, res) => {
 
 // Create a new todo
 const createTodo = async (req, res) => {
-  const { task, description } = req.body;
+  const { task, description, user_id } = req.body;
   try {
-    const todo = await Todo.create({ task, description });
+    const todo = await Todo.create({ task, description, user_id });
     res.status(201).json(todo);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -76,4 +60,4 @@ const updateTodo = async (req, res) => {
   }
 };
 
-export { createTodo, getAllTodo, getTodo, deleteTodo, updateTodo };
+export { createTodo, getAllTodo, deleteTodo, updateTodo };

@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User, authState } from "../../types/User";
 import axios from "axios";
+import { RootState } from "../../app/store";
 
 const baseURL = "http://localhost:5000/";
 const initialState: authState = {
@@ -9,6 +10,8 @@ const initialState: authState = {
   status: "idle",
   error: null,
 };
+
+export const selectUser = (state: RootState) => state.auth.user;
 
 // Thunk for signing up a user
 export const signupUser = createAsyncThunk(

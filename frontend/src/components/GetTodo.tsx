@@ -3,14 +3,18 @@ import { RootState } from "../app/store";
 import { deleteTodo, getTodo } from "../features/todo/todoSlices";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { formatDistanceToNow } from "date-fns";
+import { selectUser } from "../features/todo/authSlice";
 
 function GetTodo() {
   const dispatch = useAppDispatch();
   const { todo } = useAppSelector((state: RootState) => state.todo);
-
+  const user = useAppSelector(selectUser);
+  let userId = user?.id;
   useEffect(() => {
     const fetchTodos = () => {
-      dispatch(getTodo());
+      if (userId) {
+        dispatch(getTodo(userId));
+      }
     };
 
     // Fetch todos initially when component mounts
@@ -21,7 +25,7 @@ function GetTodo() {
 
     // Clear interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   const handleDelete = (id: string) => {
     dispatch(deleteTodo(id));

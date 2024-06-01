@@ -4,10 +4,13 @@ import axios from "axios";
 
 //get Todo
 const baseURL = "http://localhost:5000/";
-export const getTodo = createAsyncThunk("todo/getTodo", async () => {
-  const response = await axios.get<Todo[]>(`${baseURL}api/todo`);
-  return response.data;
-});
+export const getTodo = createAsyncThunk(
+  "todo/getTodo",
+  async (userID: string) => {
+    const response = await axios.get<Todo[]>(`${baseURL}api/todo/${userID}`);
+    return response.data;
+  }
+);
 
 //Add Todo
 export const addTodo = createAsyncThunk<

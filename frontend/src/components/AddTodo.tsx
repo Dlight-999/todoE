@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { useAppDispatch } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Todo } from "../types/Todo";
 import { addTodo } from "../features/todo/todoSlices";
+import { selectUser } from "../features/todo/authSlice";
 
 function AddTodo() {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const [data, setData] = useState({
     task: "",
     description: "",
@@ -22,6 +24,7 @@ function AddTodo() {
       const newTodo: Omit<Todo, "_id" | "createdAt" | "updatedAt"> = {
         task: data.task,
         description: data.description,
+        user_id: user?.id,
         completed: false,
       };
       dispatch(addTodo(newTodo));

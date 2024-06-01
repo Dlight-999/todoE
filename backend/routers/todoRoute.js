@@ -4,15 +4,12 @@ import {
   createTodo,
   deleteTodo,
   getAllTodo,
-  getTodo,
   updateTodo,
 } from "../controller/todoController.js";
 
 const router = express.Router();
 
-router.get("/", getAllTodo);
-
-router.get("/:id", getTodo);
+router.get("/:userId", getAllTodo);
 
 router.post("/", createTodo);
 
