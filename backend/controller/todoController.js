@@ -4,7 +4,7 @@ import Todo from "../models/todoModel.js";
 // Get all todos
 const getAllTodo = async (req, res) => {
   try {
-    const user_id = req.params;
+    const user_id = req.params.userId;
     const todos = await Todo.find({ user_id }).sort({ createdAt: -1 });
     res.status(200).json(todos);
   } catch (error) {
